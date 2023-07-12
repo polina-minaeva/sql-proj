@@ -110,12 +110,9 @@ group by classif.sum_type
 *к медиане стоимости билетов, результат округлите до сотых. 
 */
 
-select med_boo / med_tic as division_res --делим медианы
-from (
-select percentile_cont(0.5) WITHIN GROUP (ORDER BY amount) as med_tic, --узнаем медиану стоимости билетов
-(select percentile_cont(0.5) WITHIN GROUP (ORDER BY total_amount) as med_boo --узнаем медиану строимости брони
-from bookings)
-from ticket_flights) as two_results
+select t2.med_boo, t1.med_tic, round(t2.med_boo /  t1.med_tic, 2) --округляем с помощью round
+from (select percentile_cont(0.5) within group(order by amount)::numeric med_tic from ticket_flights) t1, --узнаем медиану стоимости билетов, превращаем в numeric, чтобы потом поделить значения
+(select percentile_cont(0.5) within group(order by total_amount)::numeric med_boo from bookings) t2 --узнаем медиану строимости брони
 
 9.Найдите значение минимальной стоимости одного километра полёта для пассажира. 
 Для этого определите расстояние между аэропортами и учтите стоимость билетов.
