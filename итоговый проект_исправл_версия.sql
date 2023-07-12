@@ -119,18 +119,18 @@ from (select percentile_cont(0.5) within group(order by amount)::numeric med_tic
 
 create extension cube
 
-create extension earthdistance
+create extension earthdistance --импортируем модули
 
-select tf.min / (earth_distance(ll_to_earth(d.latitude, d.longitude), ll_to_earth (a.latitude, a.longitude)) / 1000)
+select tf.min / (earth_distance(ll_to_earth(d.latitude, d.longitude), ll_to_earth (a.latitude, a.longitude)) / 1000) --используем функции для нахождения расстояния посредством координат
 from (
-select flight_id, min(amount)
+select flight_id, min(amount) --отбираем минимальную стоимость
 from ticket_flights 
 group by flight_id) tf
 join flights f on f.flight_id = tf.flight_id
 join airports d on f.departure_airport = d.airport_code
 join airports a on f.arrival_airport = a.airport_code
-order by 1 
-limit 1
+order by 1
+limit 1 --оставляем только одно значение
 
 
 
