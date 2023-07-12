@@ -41,7 +41,7 @@ having array_position(conditions, 'Business') is null -- отбираем дан
 
 
 --заменяем null на исходное значение, при поиске накопительного итога используем функцию sum
-select flight_id, departure_airport, actual_departure, chislo_pustikh_mest, coalesce(sum(chislo_pustikh_mest) over (partition by days, departure_airport order by actual_departure), chislo_pustikh_mest) as nacop_itog
+select flight_id, departure_airport, actual_departure, chislo_pustikh_mest, coalesce(sum(chislo_pustikh_mest) over (partition by days, departure_airport order by actual_departure), chislo_pustikh_mest) as nacop_itog --находим накопительный итог с помощью оконной функции
 from (
 select forth_sel.flight_id, forth_sel.aircraft_code, days, forth_sel.departure_airport, count, chislo_pustikh_mest, actual_departure
 from (
@@ -49,7 +49,7 @@ select *
 from (
 select *
 from (
-select flight_id, aircraft_code, days, departure_airport, count(flight_id) over (partition by days, departure_airport), chislo_pustikh_mest
+select flight_id, aircraft_code, days, departure_airport, count(flight_id) over (partition by days, departure_airport), chislo_pustikh_mest --считаем количество перелетов с помощью оконной функции
 from (
 select f.flight_id, f.aircraft_code, date_trunc('day', actual_departure) as days, departure_airport, count_seats as chislo_pustikh_mest
 from flights f 
